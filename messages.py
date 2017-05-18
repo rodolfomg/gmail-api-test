@@ -80,15 +80,39 @@ def ListMessagesMatchingQuery(service, user_id, query=''):
   except errors.HttpError as error:
     print ('An error occurred: %s' % error)
 
+def GetMessage(service, user_id, msg_id):
+  """Get a Message with given ID.
+
+  Args:
+    service: Authorized Gmail API service instance.
+    user_id: User's email address. The special value "me"
+    can be used to indicate the authenticated user.
+    msg_id: The ID of the Message required.
+
+  Returns:
+    A Message.
+  """
+  try:
+    message = service.users().messages().get(userId=user_id, id=msg_id).execute()
+
+    print ('Message snippet: %s' % message['snippet'])
+
+    return message
+  except errors.HttpError as error:
+    print ('An error occurred: %s' % error)
 
 def main():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
-    messages = ListMessagesMatchingQuery(service, 'me', 'from:uber.mexico@uber.com')
+    messages = ListMessagesMatchingQuery(service, 'me', 'from:me')
 
     print (messages)
+
+    for msg in messages:
+        GetMessage(service, 'me', msg['id'])
+        print ('\n')
 
 if __name__ == '__main__':
     main()
