@@ -77,8 +77,8 @@ def ListMessagesMatchingQuery(service, user_id, query=''):
       messages.extend(response['messages'])
 
     return messages
-  except errors.HttpError, error:
-    print 'An error occurred: %s' % error
+  except errors.HttpError as error:
+    print ('An error occurred: %s' % error)
 
 
 def main():
@@ -86,7 +86,9 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
-    ListMessagesMatchingQuery(service, 'me', 'from:uber.mexico@uber.com')
+    messages = ListMessagesMatchingQuery(service, 'me', 'from:uber.mexico@uber.com')
+
+    print (messages)
 
 if __name__ == '__main__':
     main()
